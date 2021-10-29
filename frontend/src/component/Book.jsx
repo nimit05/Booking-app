@@ -10,12 +10,14 @@ const Book = () => {
 
   const Handler = (data) => {
 
+    //checking if number of seats users has added are valid or not
     if(parseInt(data.numSeats) === 0){
       seterr("Please Enter a valid number");
       setsuccess(true);
       return;
     }
 
+    //booking the seats
     fetch("/api/bookticket" ,{
       method : "POST",
       headers: {
@@ -36,6 +38,7 @@ const Book = () => {
   }
 
   useEffect(() => {
+    //getting all the seats from the database
    fetch("/api/bookticket")
    .then((res) => res.json())
    .then((data) => {
@@ -46,6 +49,7 @@ const Book = () => {
       }
    })
   }, [success])
+
 
   const HandleBack = () => {
     setsuccess(false);
@@ -58,12 +62,14 @@ const Book = () => {
       
       {success ? (
         <>
+          {/* if there will be any error show error else show seats booked  */}
           {err ? (
           <h3>{err}</h3>
           ) : (
             <div>
               <ErrDiv>You have booked your Seats Successfully</ErrDiv>
           
+              {/* Showing the seat matrix */}
               <Matrix>
               {allSeats.map((e,i) => {
                 let x = seats.find(ele => ele.SeatNum === e.SeatNum) !== undefined ? 1 : 0;
