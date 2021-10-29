@@ -55,4 +55,32 @@ route.get('/' , async(req,res) => {
   
 })
 
+route.put('/' , async(req,res) => {
+  try {
+    let seats = await Seats.findAll()
+
+    for(let seat of seats){
+      seat.Available = 1;
+      seat.save();
+    }
+
+    let rows = await AvailableSeats.findAll()
+
+    for(let x of rows){
+      if(x.RowNum === 12){
+        x.Seats = 3;
+        x.save();
+        continue;
+      }
+      x.Seats = 7;
+      x.save();
+    }
+
+    res.send({seats,rows})
+
+  } catch (error) {
+    res.send(error.message)
+  }
+})
+
 module.exports = {route}

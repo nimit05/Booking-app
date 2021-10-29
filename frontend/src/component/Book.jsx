@@ -11,7 +11,7 @@ const Book = () => {
   const Handler = (data) => {
 
     //checking if number of seats users has added are valid or not
-    if(parseInt(data.numSeats) === 0){
+    if(parseInt(data.numSeats) <= 0){
       seterr("Please Enter a valid number");
       setsuccess(true);
       return;
