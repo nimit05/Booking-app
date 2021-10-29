@@ -11,7 +11,7 @@ const BookTicket = async(numSeats,rowNum) => {
           {RowNum : rowNum},
           {Available : 1}
         ]
-      }
+      },
     })
     
     //making all selected seats unavailable

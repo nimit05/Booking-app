@@ -7,7 +7,8 @@ const {BookTicket,NonCons} = require('../../controllers/bookTickets')
 route.post('/' , async(req,res) => {
   try {
     //required seats fetched from body of post request
-    var numSeats = req.body.numSeats;
+    var numSeats = parseInt(req.body.numSeats);
+    console.log(numSeats);
     var seats = [];
 
     if(numSeats > 7){
@@ -33,12 +34,13 @@ route.post('/' , async(req,res) => {
       row.save();
       seats = await BookTicket(numSeats,row.RowNum);
     }
+    console.log(seats)
     res.status(200).send(seats)
     
   } 
   catch (error) {
     console.log(error.message)
-    res.send(error.message)
+    res.status(400).send({error: error.message})
   }
 
 })
@@ -48,7 +50,7 @@ route.get('/' , async(req,res) => {
     const seats = await Seats.findAll();
     res.status(200).send(seats); 
   } catch (error) {
-    res.send(error.message)
+    res.status(400).send({error : error.message})
   }
   
 })
