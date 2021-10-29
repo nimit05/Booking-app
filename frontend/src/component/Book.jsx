@@ -16,7 +16,7 @@ const Book = () => {
       return;
     }
 
-    fetch("http://localhost:8080/api/bookticket" ,{
+    fetch("/api/bookticket" ,{
       method : "POST",
       headers: {
         "Content-Type": "application/json"
@@ -36,7 +36,7 @@ const Book = () => {
   }
 
   useEffect(() => {
-   fetch("http://localhost:8080/api/bookticket")
+   fetch("/api/bookticket")
    .then((res) => res.json())
    .then((data) => {
       if(data.error){
