@@ -5,9 +5,10 @@ dotenv.config();
 //setting up database
 const db = new Sequelize({
   dialect: "mysql",
+  host: process.env.aws_mysql_host,
   database: "booking_app",
-  username: "root",
-  password: "Nimit@001"
+  username: process.env.aws_mysql_username,
+  password: process.env.aws_mysql_pass
 });
 
 //Created Seats Table
