@@ -78,9 +78,13 @@ const Book = () => {
                   bg = "green"
                 }
                 return (
+                  <>
                   <Seat key = {i} backgroundColor = {bg} margin = "5px 5px" >
                     {e.SeatNum}
                     </Seat>
+                    <br />
+                    {(i+1)%6 === 0 && <br/>}
+                    </>
                 )
               }
               )}

@@ -16,10 +16,10 @@ app.use("/api", apiRouter);
 
 app.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+}); 
 
 db.sync().then(() => {
   app.listen(process.env.PORT || 8080, () => {
     console.log("server-started");
   });
-});
+}); 

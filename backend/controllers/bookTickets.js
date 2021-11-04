@@ -1,14 +1,13 @@
 const Sequelize = require("sequelize");
 const {Seats,AvailableSeats} = require("../db")
 
-const BookTicket = async(numSeats,rowNum) => {
+const TicketAllotment = async(numSeats,rowNum) => {
   try {
-    //fetching seatNumbers from Seats db
     var temp = await Seats.findAll({
       limit : numSeats,
       where: {
         [Sequelize.Op.and] : [
-          {RowNum : rowNum},
+          {RowNum : parseInt(rowNum)},
           {Available : 1}
         ]
       },
@@ -19,10 +18,37 @@ const BookTicket = async(numSeats,rowNum) => {
       seat.Available = 0;
       seat.save()
     }
+    return temp;
+  } catch (error) {
+    return new Error("Ticket allotment error : " +  error.message)
+  }
+  
+}
+
+const BookTicket = async(numSeats) => {
+  try {
+    //fetching seatNumbers from Seats db
+
+    let rows = await AvailableSeats.findAll({
+      where: {
+        Seats: {
+          [Sequelize.Op.gte] : parseInt(numSeats)
+        }
+      },
+    })
+
+    rows.sort(function(a,b){
+      return a.Seats - b.Seats
+    })
+
+    let temp = await TicketAllotment(numSeats,rows[0].RowNum);
+    
+    rows[0].Seats = (rows[0].Seats - parseInt(numSeats));
+    rows[0].save();
 
     return temp;
   } catch (error) {
-    throw Error("error Ocurred while fetching seat number")
+    throw Error(error.message)
   }
 }
 
@@ -60,11 +86,26 @@ const NonCons = async(numSeats) => {
     // finding all seats by traversing on rows array
     while(numSeats != 0){
       //fetching seat number from ith row
-      let temp = await BookTicket(Math.min(numSeats,rows[i].Seats),rows[i].RowNum);
+      var temp = []
+      const obj = await AvailableSeats.findOne({
+        where: {
+          Seats: {
+            [Sequelize.Op.gte] : numSeats
+          }
+        },
+      })
+      if(obj){
+        temp = await BookTicket(numSeats);
+      }else{
+        temp = await TicketAllotment(Math.min(numSeats,rows[i].Seats),rows[i].RowNum);
 
-      //updating hte seat left in ith row
-      rows[i].Seats = (rows[i].Seats - temp.length);
-      rows[i].save();
+          //updating the seat left in ith row
+        rows[i].Seats = (rows[i].Seats - temp.length);
+        rows[i].save();
+      }
+
+    
+     
 
       //adding seats of ith row in final answer
       seats = seats.concat(temp);

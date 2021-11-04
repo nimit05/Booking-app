@@ -8,7 +8,6 @@ route.post('/' , async(req,res) => {
   try {
     //required seats fetched from body of post request
     var numSeats = parseInt(req.body.numSeats);
-    console.log(numSeats);
     var seats = [];
 
     if(numSeats > 7){
@@ -30,11 +29,8 @@ route.post('/' , async(req,res) => {
     }
     else{
       //Updating seats left after allocation
-      row.Seats = (row.Seats - parseInt(numSeats));
-      row.save();
-      seats = await BookTicket(numSeats,row.RowNum);
+      seats = await BookTicket(numSeats);
     }
-    console.log(seats)
     res.status(200).send(seats)
     
   } 
